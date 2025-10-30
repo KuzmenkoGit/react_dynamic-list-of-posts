@@ -15,14 +15,15 @@ export const UserSelector: React.FC<Props> = ({
   onPosts,
 }) => {
   const [isOpenSelector, setIsOpenSelector] = useState(false);
-  const [nameSelectedUser, setNameSelectedUser] = useState('Choose a user');
 
-  function handlerUserItemClick(userId: number, userName: string) {
+  function handleUserItemClick(userId: number) {
     onUserIdSelector(userId);
     setIsOpenSelector(prev => !prev);
-    setNameSelectedUser(userName);
     onPosts(userId);
   }
+
+  const selectedUser = users.find(user => user.id === selectedUserId);
+  const buttonText = selectedUser ? selectedUser.name : 'Choose a user';
 
   return (
     <div
@@ -39,7 +40,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => setIsOpenSelector(prev => !prev)}
         >
-          <span>{nameSelectedUser}</span>
+          <span>{buttonText}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -57,7 +58,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': user.id === selectedUserId,
                 })}
                 key={user.id}
-                onClick={() => handlerUserItemClick(user.id, user.name)}
+                onClick={() => handleUserItemClick(user.id)}
               >
                 {user.name}
               </a>

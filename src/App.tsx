@@ -22,12 +22,12 @@ export const App = () => {
   const [status, setStatus] = useState<Status>('idle');
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPostId, setselectedPostId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   const [openForm, setOpenForm] = useState(false);
 
   function handlePosts(userId: number) {
-    setselectedPostId(0);
+    setSelectedPostId(0);
     setStatus('loading');
     getPostsFromUser(userId)
       .then(data => {
@@ -89,7 +89,7 @@ export const App = () => {
                 {status === 'success' && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    onSelectedPostId={setselectedPostId}
+                    onSelectedPostId={setSelectedPostId}
                     selectedPostId={selectedPostId}
                     setOpenForm={setOpenForm}
                   />

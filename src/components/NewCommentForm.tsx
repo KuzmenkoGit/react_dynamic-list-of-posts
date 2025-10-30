@@ -2,20 +2,11 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
-// 1. Создать отслеживание состояние формы
-// 2. Создать отслеживание состояния ошибок
-// 3. Создать обработчик сабмита на форму -> Проверить валидность пришедщих данных (не пустые ли)
-// 3.1 Если не прошли то выдать ошибку (с подсвечиванием полей где не прошли).Задать инпутам класс ошибки и описание ошибки
-// 3.2 Если все гуд, то отправляем форму с помощью переданного хендлера из PostDetails (он нужен там, для обработки ошибки)
-// 4. После отправки очистить body
-// 5. При клике на clear очистить всю формы ( и Ероры )
-// 6. При сабмите на кнопку Add добавить класс loading
-
 type Props = {
-  OnFormSubmit: (data: CommentData) => void;
+  onFormSubmit: (data: CommentData, clearFormBody: () => void) => void;
   loading: boolean;
 };
-export const NewCommentForm: React.FC<Props> = ({ OnFormSubmit, loading }) => {
+export const NewCommentForm: React.FC<Props> = ({ onFormSubmit, loading }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,6 +18,10 @@ export const NewCommentForm: React.FC<Props> = ({ OnFormSubmit, loading }) => {
     email: false,
     body: false,
   });
+
+  const clearFormBody = () => {
+    setFormData(prev => ({ ...prev, body: '' }));
+  };
 
   function handleSubmitForm(e: React.FormEvent) {
     e.preventDefault();
@@ -43,8 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({ OnFormSubmit, loading }) => {
       return;
     }
 
-    setFormData(prev => ({ ...prev, body: '' }));
-    OnFormSubmit(formData);
+    onFormSubmit(formData, clearFormBody);
   }
 
   function handleFormChange(

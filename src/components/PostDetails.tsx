@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+// ИСПРАВЛЕНО: Удалили закомментированный импорт
 // import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -39,11 +40,15 @@ export const PostDetails: React.FC<Props> = ({
       });
   }, [post.id]);
 
-  function handlerFormSubmit(commentData: CommentData) {
+  function handleFormSubmit(
+    commentData: CommentData,
+    clearFormBody: () => void,
+  ) {
     setLoadingSubmitForm(true);
     postComment(commentData, post.id)
       .then(comment => {
         setComments(prev => [...prev, comment]);
+        clearFormBody();
       })
       .catch(() => {
         setCommentsLoadingStatus('error');
@@ -54,13 +59,14 @@ export const PostDetails: React.FC<Props> = ({
   }
 
   function handleDeleteComment(commentId: number) {
-    deleteComment(commentId)
-      .then(() => {
-        setComments(prev => prev.filter(comment => comment.id !== commentId));
-      })
-      .catch(() => {
-        setCommentsLoadingStatus('error');
-      });
+    const oldComments = comments;
+
+    setComments(prev => prev.filter(comment => comment.id !== commentId));
+
+    deleteComment(commentId).catch(() => {
+      setComments(oldComments);
+      setCommentsLoadingStatus('error');
+    });
   }
 
   return (
@@ -137,7 +143,7 @@ export const PostDetails: React.FC<Props> = ({
 
           {openForm && (
             <NewCommentForm
-              OnFormSubmit={handlerFormSubmit}
+              onFormSubmit={handleFormSubmit}
               loading={loadingSubmitForm}
             />
           )}
